@@ -40,9 +40,10 @@ export const ProductCard = ({ product }: ProductCardProps) => {
             </CardContent>
 
             <CardFooter className="flex-col items-start gap-2 text-sm">
-                <p className="text-xl leading-none font-lexend">
-                    Cena: {product.price}
-                </p>
+                <p>Mesto:{' '}
+                    <span className="font-semibold">{product.place}</span></p>
+                <p>Cena:{' '}
+                    <span className="font-semibold">{product.price}</span></p>
                 <div className='mt-8 flex justify-start gap-2.5 border-2 border-blue-500'>
                     <Image src={star} alt='rating icon' width={24} height={24} />
                     <p className='font-montserrat text-xl leading-normal text-slate-gray'>

@@ -51,26 +51,33 @@ export interface Product {
     imgURL: StaticImageData;
     name: string;
     price: string;
+    place: string;
 }
 export const products: Product[] = [
     {
         imgURL: shoe4,
         name: "Nike Air Jordan-01",
         price: "200.20",
+        place: 'Brus'
     },
     {
         imgURL: shoe5,
         name: "Nike Air Jordan-10",
         price: "210.20",
+        place: 'Krusevac'
+
     },
     {
         imgURL: shoe6,
         name: "Nike Air Jordan-100",
         price: "220.20",
+        place: 'Aleksandrovac'
     },
     {
         imgURL: shoe7,
         name: "Nike Air Jordan-001",
         price: "230.20",
+        place: 'Brus'
+
     },
 ] 
