@@ -8,14 +8,12 @@ import {
   PopoverContent,
   PopoverTrigger,
 } from '@/components/ui/popover';
+import { ProfilePage } from '@/features/profile';
+import type { ProfilePageProps } from '@/auth/nextjs/currentUser';
 
 
-export function ProfilePopover() {
+export function ProfilePopover({ user }: ProfilePageProps) {
   const [isPopoverOpen, setIsPopoverOpen] = useState(false);
-
-  const handleSignout = () => {
-    console.log('signout');
-  }
 
   return (
     <Popover open={isPopoverOpen} onOpenChange={setIsPopoverOpen}>
@@ -30,26 +28,7 @@ export function ProfilePopover() {
         </Button>
       </PopoverTrigger>
       <PopoverContent className="w-64 p-0" align="end">
-        <div className="text-left">
-          <div className="flex items-center border-b pl-4 pr-6 pb-5 pt-6">
-            <div className="bg-background shadow p-2 rounded-md">
-              <AppLogoSymbol />
-            </div>
-            <div className="ms-3">
-              <p className="font-semibold">{'Milos'}</p>
-              <p>{'milos@gmail.com'}</p>
-            </div>
-          </div>
-          <div className="border-t px-6 pb-6 pt-5">
-            <Button
-              className="h-auto w-full justify-start p-0 font-medium outline-none hover:bg-transparent focus-visible:ring-0"
-              variant="ghost"
-              onClick={handleSignout}
-            >
-              Sign Out
-            </Button>
-          </div>
-        </div>
+        <ProfilePage user={user} />
       </PopoverContent>
     </Popover>
   );

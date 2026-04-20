@@ -7,8 +7,9 @@ import { MobileSidebar } from '@/components/menu/sidebar-menu/mobile-sidebar';
 import { Button } from '@/components/ui/button';
 import { useScroll } from '@/hooks';
 import { cn } from '@/utils/theme';
+import type { ProfilePageProps } from '@/auth/nextjs/currentUser';
 
-export function MainHeader() {
+export function MainHeader({ user }: ProfilePageProps) {
   const { isScrolled } = useScroll();
 
   return (
@@ -48,7 +49,7 @@ export function MainHeader() {
               </Button>
             }
           />
-          <ProfilePopover />
+          <ProfilePopover user={user} />
         </div>
       </div>
     </div>

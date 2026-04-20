@@ -17,6 +17,10 @@ type User = Exclude<
   undefined | null
 >
 
+export type ProfilePageProps = {
+  user: FullUser | null;
+};
+
 function _getCurrentUser(options: {
   withFullUser: true
   redirectIfNotFound: true

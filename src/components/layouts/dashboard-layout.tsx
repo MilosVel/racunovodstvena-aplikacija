@@ -1,8 +1,12 @@
 import { MainHeader } from '@/components/header/main-header';
 import { Sidebar } from '@/components/menu/sidebar-menu/sidebar';
 import { cn } from '@/utils/theme';
+import { getCurrentUser } from "@/auth/nextjs/currentUser"
 
-export function DashboardLayout({ children }: { children: React.ReactNode }) {
+export async function DashboardLayout({ children }: { children: React.ReactNode }) {
+
+  const fullUser = await getCurrentUser({ withFullUser: true })
+
   return (
     <div className="flex min-h-screen flex-grow">
       <aside
@@ -14,7 +18,7 @@ export function DashboardLayout({ children }: { children: React.ReactNode }) {
       </aside>
       <main className="flex w-full flex-col xl:ms-[270px] xl:w-[calc(100%-270px)] 2xl:ms-72 2xl:w-[calc(100%-288px)]">
         <div className="sticky top-0 z-40 w-full">
-          <MainHeader />
+          <MainHeader user={fullUser} />
         </div>
         <div className="w-full flex-1 overflow-y-auto">{children}</div>
       </main>

@@ -21,10 +21,17 @@ export default async function HomePage() {
                     </Button>
                 </div>
             ) : (
-                <div className="max-w-[500px] mt-4 border-2 p-2">
-                    <div>
-                        <p className="p-2 m-2">User: {fullUser.name}</p>
-                        <p className="p-2 m-2">Role: {fullUser.role}</p>
+                <div className=" mt-4 border-2 p-2">
+                    <div className='m-2'>
+                        <p className="font-semibold">
+                            Zdravo <span className="font-bold">{fullUser?.name || 'korisniče'}</span>
+                        </p>
+                    </div>
+
+                    <div className='m-2'>
+                        <p className="">
+                            Ova aplikacija je napravljena da pomogne u obavljanju svakodnevnih raöunovodstvenih poslova.
+                        </p>
                     </div>
                     <div className="flex gap-4">
                         <Button asChild variant="outline">
