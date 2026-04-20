@@ -81,7 +81,7 @@ export function UploadPlanIIzvrsenjeDataForm({ closeCreteTable }: { closeCreteTa
                     setPercentageUploaded(50 + Math.round((processed / total) * 50));
                 }
             });
-            const IbkData = await readSchemaParsedExcelFile<ibkItem>({
+            const IbkItems = await readSchemaParsedExcelFile<ibkItem>({
                 file: formValues.file,
                 schema: IbkSchema,
                 sheetIndex: 2,
@@ -95,7 +95,7 @@ export function UploadPlanIIzvrsenjeDataForm({ closeCreteTable }: { closeCreteTa
             const {
                 planIIzvrsenje,
                 header
-            } = await createPlanIIzvrsenje(izvrsenjeData, planData, IbkData)
+            } = await createPlanIIzvrsenje(izvrsenjeData, planData, new Set(IbkItems.map((item) => item.ibk)))
 
 
             const worksheet = XLSX.utils.json_to_sheet(planIIzvrsenje, { header })

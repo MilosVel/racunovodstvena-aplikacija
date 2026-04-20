@@ -5,7 +5,7 @@ import { getCurrentUser } from "@/auth/nextjs/currentUser"
 import { canInsertPlanIIzvrsenje } from "@/features/plan-i-izvrsenje/permissions";
 import { planItem, izvrsenjeItem, ibkItem } from "@/features/plan-i-izvrsenje/schemas";
 
-export async function createPlanIIzvrsenje(izvrsenjeData: izvrsenjeItem[], planData: planItem[], ibkItem: ibkItem[]) {
+export async function createPlanIIzvrsenje(izvrsenjeData: izvrsenjeItem[], planData: planItem[], ibkSet: Set<string> | undefined) {
 
     const user = await getCurrentUser({ redirectIfNotFound: true })  // nece da radi bez ->   { redirectIfNotFound: true }   Proveriti zasto !!!!
 
@@ -15,7 +15,9 @@ export async function createPlanIIzvrsenje(izvrsenjeData: izvrsenjeItem[], planD
     }
 
 
+
     type IzvrsenjeGrouped = {
+        jbkjs: string
         konto: string;
         ukupno: number;
         [izvor: string]: string | number;
@@ -46,16 +48,26 @@ export async function createPlanIIzvrsenje(izvrsenjeData: izvrsenjeItem[], planD
         // ── Group izvrsenje by first 4 digits of konto ──
         const izvrsenjeMap = new Map<string, IzvrsenjeGrouped>();
 
+
         izvrsenjeData.forEach((item) => {
-            const key = item.konto.slice(0, 4);
+            let konto = item.konto;
+
+            if (ibkSet) {       // === IBK special logic ===
+                if (ibkSet.has(item.jbkjs)) {
+                    konto = item.konto.slice(2) + "00";
+                }
+            }
+
+            const key = konto.slice(0, 4);
             const existing = izvrsenjeMap.get(key);
-            const duguje = Number(item.duguje);
+            const duguje = Number(item.duguje) || 0;
 
             if (existing) {
                 existing[item.izvor] = (Number(existing[item.izvor] ?? 0) + duguje);
                 existing.ukupno += duguje;
             } else {
                 izvrsenjeMap.set(key, {
+                    jbkjs: item.jbkjs,
                     konto: key,
                     ukupno: duguje,
                     [item.izvor]: duguje,
@@ -69,7 +81,7 @@ export async function createPlanIIzvrsenje(izvrsenjeData: izvrsenjeItem[], planD
         planData.forEach((item) => {
             const key = item.konto.slice(0, 4);
             const existing = planMap.get(key);
-            const plan = Number(item.plan);
+            const plan = Number(item.plan) || 0;
 
             if (existing) {
                 existing.plan += plan;
