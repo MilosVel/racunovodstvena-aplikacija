@@ -7,7 +7,7 @@ import { useState } from "react";
 import { Button } from "@/components/ui/button";
 import { excelFileFileSchema, ExceFileFormSchema } from "@/utils/manage-file/excel-file-schema";
 import { readSchemaParsedExcelFile, readMultipleExcelSheets } from "@/utils/manage-file/read-schema-parsed-excel-file";
-import { planSchema, planItem, izvrsenjeSchema, izvrsenjeHeaderMap, izvrsenjeItem } from "@/features/plan-i-izvrsenje/schemas";
+import { planSchema, planItem, izvrsenjeSchema, izvrsenjeHeaderMap, izvrsenjeItem, ibkItem, IbkSchema } from "@/features/plan-i-izvrsenje/schemas";
 import { createPlanIIzvrsenje } from "@/features/plan-i-izvrsenje/actions";
 import { SKIP_ROWS_SPIRI } from '@/shared/constants';
 import * as XLSX from 'xlsx'
@@ -81,12 +81,21 @@ export function UploadPlanIIzvrsenjeDataForm({ closeCreteTable }: { closeCreteTa
                     setPercentageUploaded(50 + Math.round((processed / total) * 50));
                 }
             });
+            const IbkData = await readSchemaParsedExcelFile<ibkItem>({
+                file: formValues.file,
+                schema: IbkSchema,
+                sheetIndex: 2,
+                lenient: true,
+                onProgress: (processed, total) => {
+                    setPercentageUploaded(50 + Math.round((processed / total) * 50));
+                }
+            });
 
 
             const {
                 planIIzvrsenje,
                 header
-            } = await createPlanIIzvrsenje(izvrsenjeData, planData)
+            } = await createPlanIIzvrsenje(izvrsenjeData, planData, IbkData)
 
 
             const worksheet = XLSX.utils.json_to_sheet(planIIzvrsenje, { header })

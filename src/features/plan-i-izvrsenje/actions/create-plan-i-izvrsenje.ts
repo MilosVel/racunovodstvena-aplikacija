@@ -3,9 +3,9 @@
 import { getCurrentUser } from "@/auth/nextjs/currentUser"
 
 import { canInsertPlanIIzvrsenje } from "@/features/plan-i-izvrsenje/permissions";
-import { planItem, izvrsenjeItem } from "@/features/plan-i-izvrsenje/schemas";
+import { planItem, izvrsenjeItem, ibkItem } from "@/features/plan-i-izvrsenje/schemas";
 
-export async function createPlanIIzvrsenje(izvrsenjeData: izvrsenjeItem[], planData: planItem[]) {
+export async function createPlanIIzvrsenje(izvrsenjeData: izvrsenjeItem[], planData: planItem[], ibkItem: ibkItem[]) {
 
     const user = await getCurrentUser({ redirectIfNotFound: true })  // nece da radi bez ->   { redirectIfNotFound: true }   Proveriti zasto !!!!
 
