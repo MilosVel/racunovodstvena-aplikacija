@@ -10,9 +10,15 @@ import { readSchemaParsedExcelFile, readMultipleExcelSheets } from "@/utils/mana
 import { planSchema, planItem, izvrsenjeSchema, izvrsenjeHeaderMap, izvrsenjeItem, ibkItem, IbkSchema } from "@/features/plan-i-izvrsenje/schemas";
 import { createPlanIIzvrsenje } from "@/features/plan-i-izvrsenje/actions";
 import { SKIP_ROWS_SPIRI } from '@/shared/constants';
-import * as XLSX from 'xlsx'
+import type { GroupAndMergeResult } from "@/features/plan-i-izvrsenje/dto";
 
-export function UploadPlanIIzvrsenjeDataForm({ closeCreteTable }: { closeCreteTable: () => void }) {
+export function UploadPlanIIzvrsenjeDataForm({ 
+    closeCreteTable, 
+    onDataProcessed 
+}: { 
+    closeCreteTable: () => void;
+    onDataProcessed?: (data:GroupAndMergeResult) => void;
+}) {
     const [percentageUploaded, setPercentageUploaded] = useState(0);
     const [isProcessing, setIsProcessing] = useState(false);
 
@@ -97,17 +103,16 @@ export function UploadPlanIIzvrsenjeDataForm({ closeCreteTable }: { closeCreteTa
                 header
             } = await createPlanIIzvrsenje(izvrsenjeData, planData, new Set(IbkItems.map((item) => item.ibk)))
 
+            // Call the callback to pass data to parent component
+            if (onDataProcessed) {
+                onDataProcessed({planIIzvrsenje, header});
+            }
 
-            const worksheet = XLSX.utils.json_to_sheet(planIIzvrsenje, { header })
-            const workbook = XLSX.utils.book_new()
-            XLSX.utils.book_append_sheet(workbook, worksheet, 'sheet')
-
-            XLSX.writeFile(workbook, 'fileName.xlsx')
-
+    
 
             setPercentageUploaded(100);
-            toast.success('Vaš fajl možete preuzeti u downloads folderu', { // Ovaj toast nije kompatibilan ako user nema permisije ****
-                // description: `Izvrsenje: ${izvrsenjeData.length} zapisa, Plan: ${planData.length} zapisa`,
+            toast.success('Podaci su uspešno obrađeni', {
+                description: `Izvrsenje: ${izvrsenjeData.length} zapisa, Plan: ${planData.length} zapisa`,
                 duration: 7000,
             });
 

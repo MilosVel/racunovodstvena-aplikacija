@@ -5,6 +5,10 @@ import { getCurrentUser } from "@/auth/nextjs/currentUser"
 import { canInsertPlanIIzvrsenje } from "@/features/plan-i-izvrsenje/permissions";
 import { planItem, izvrsenjeItem, ibkItem } from "@/features/plan-i-izvrsenje/schemas";
 
+
+import type { IzvrsenjeGrouped, PlanGrouped, GroupAndMergeResult } from "@/features/plan-i-izvrsenje/dto";
+
+
 export async function createPlanIIzvrsenje(izvrsenjeData: izvrsenjeItem[], planData: planItem[], ibkSet: Set<string> | undefined) {
 
     const user = await getCurrentUser({ redirectIfNotFound: true })  // nece da radi bez ->   { redirectIfNotFound: true }   Proveriti zasto !!!!
@@ -14,31 +18,6 @@ export async function createPlanIIzvrsenje(izvrsenjeData: izvrsenjeItem[], planD
         throw new Error(`Inserting table error. (Zbog permisja user mora biti admin a trenutni user je: ${user.role})`);
     }
 
-
-
-    type IzvrsenjeGrouped = {
-        jbkjs: string
-        konto: string;
-        ukupno: number;
-        [izvor: string]: string | number;
-    };
-
-    type PlanGrouped = {
-        konto: string;
-        plan: number;
-    };
-
-    type MergedRow = {
-        konto: string;
-        ukupno: number;
-        plan: number;
-        [izvor: string]: string | number | undefined;
-    };
-
-    type GroupAndMergeResult = {
-        planIIzvrsenje: MergedRow[];
-        header: string[];
-    };
 
     function groupAndMerge(
         izvrsenjeData: izvrsenjeItem[],
