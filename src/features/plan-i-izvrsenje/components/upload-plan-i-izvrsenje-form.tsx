@@ -5,6 +5,7 @@ import { UploadInput } from "@/components/ui/form/upload-input";
 import { useState } from "react";
 import { Button } from "@/components/ui/button";
 import { excelFileFileSchema, ExceFileFormSchema } from "@/utils/manage-file/excel-file-schema";
+import { PlanIIzvrsenjeInputExcelFormSchema, planIIzvrsenjeInputExcelSchema } from "@/features/plan-i-izvrsenje/schemas";
 import { readSchemaParsedExcelFile, readMultipleExcelSheets } from "@/utils/manage-file/read-schema-parsed-excel-file";
 import { planSchema, planItem, izvrsenjeSchema, izvrsenjeHeaderMap, izvrsenjeItem, ibkItem, IbkSchema } from "@/features/plan-i-izvrsenje/schemas";
 import { createPlanIIzvrsenje } from "@/features/plan-i-izvrsenje/actions";
@@ -36,13 +37,13 @@ export function UploadPlanIIzvrsenjeDataForm({
         getValues,
         clearErrors,
         watch
-    } = useForm<ExceFileFormSchema>({
+    } = useForm<PlanIIzvrsenjeInputExcelFormSchema>({
         defaultValues: {
             file: undefined,
             IspfiFileName: '',
             ispfi_izvestaj: false,
         },
-        resolver: zodResolver(excelFileFileSchema),
+        resolver: zodResolver(planIIzvrsenjeInputExcelSchema),
     });
 
     const ispfiIzvestajValue = watch('ispfi_izvestaj');
