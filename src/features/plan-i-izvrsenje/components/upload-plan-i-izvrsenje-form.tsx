@@ -12,7 +12,7 @@ import { SKIP_ROWS_SPIRI } from '@/shared/constants';
 import { Controller, useForm } from 'react-hook-form';
 import { Input, Label } from '@/components/ui/form';
 import { Switch } from '@/components/ui/switch/switch';
-
+import { useEffect } from 'react';
 
 import type { GroupAndMergeResult } from "@/features/plan-i-izvrsenje/dto";
 
@@ -33,7 +33,9 @@ export function UploadPlanIIzvrsenjeDataForm({
         register,
         formState: { errors, isDirty },
         reset,
-        getValues
+        getValues,
+        clearErrors,
+        watch
     } = useForm<ExceFileFormSchema>({
         defaultValues: {
             file: undefined,
@@ -42,6 +44,14 @@ export function UploadPlanIIzvrsenjeDataForm({
         },
         resolver: zodResolver(excelFileFileSchema),
     });
+
+    const ispfiIzvestajValue = watch('ispfi_izvestaj');
+    
+    useEffect(() => {
+        if (!ispfiIzvestajValue) {
+            clearErrors('IspfiFileName');
+        }
+    }, [ispfiIzvestajValue, clearErrors]);
 
     const handleFormSubmit = async (formValues: ExceFileFormSchema) => {
         try {
@@ -167,7 +177,7 @@ export function UploadPlanIIzvrsenjeDataForm({
                 />
 
 
-        { getValues('ispfi_izvestaj') && 
+        { ispfiIzvestajValue && 
         (<Input
             type="text"
             placeholder={'PI-123456-89'}
