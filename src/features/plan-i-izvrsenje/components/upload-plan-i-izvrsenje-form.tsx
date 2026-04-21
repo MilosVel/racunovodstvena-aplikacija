@@ -7,7 +7,7 @@ import { Button } from "@/components/ui/button";
 import { excelFileFileSchema, ExceFileFormSchema } from "@/utils/manage-file/excel-file-schema";
 import { PlanIIzvrsenjeInputExcelFormSchema, planIIzvrsenjeInputExcelSchema } from "@/features/plan-i-izvrsenje/schemas";
 import { readSchemaParsedExcelFile, readMultipleExcelSheets } from "@/utils/manage-file/read-schema-parsed-excel-file";
-import { planSchema, planItem, izvrsenjeSchema, izvrsenjeHeaderMap, izvrsenjeItem, ibkItem, IbkSchema } from "@/features/plan-i-izvrsenje/schemas";
+import { planSchema, planItem, izvrsenjeSchema, izvrsenjeHeaderMap, izvrsenjeItem, ibkItem, IbkSchema, izvorItem, IzvoriSchema } from "@/features/plan-i-izvrsenje/schemas";
 import { createPlanIIzvrsenje } from "@/features/plan-i-izvrsenje/actions";
 import { SKIP_ROWS_SPIRI } from '@/shared/constants';
 import { Controller, useForm } from 'react-hook-form';
@@ -117,11 +117,25 @@ export function UploadPlanIIzvrsenjeDataForm({
                 }
             });
 
+            const ibkArray = new Set(IbkItems.map((item) => item.ibk))
+
+
+          const IzvoriItems = await readSchemaParsedExcelFile<izvorItem>({
+                file: formValues.file,
+                schema: IzvoriSchema,
+                sheetIndex: 3,
+                lenient: true,
+                onProgress: (processed, total) => {
+                    setPercentageUploaded(50 + Math.round((processed / total) * 50));
+                }
+            });
+
+        console.log(IzvoriItems)
 
             const {
                 planIIzvrsenje,
                 header
-            } = await createPlanIIzvrsenje(izvrsenjeData, planData, new Set(IbkItems.map((item) => item.ibk)))
+            } = await createPlanIIzvrsenje(izvrsenjeData, planData, ibkArray)
 
             // Call the callback to pass data to parent component
             if (onDataProcessed) {
