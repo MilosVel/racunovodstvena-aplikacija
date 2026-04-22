@@ -25,9 +25,9 @@ export const initialSidebarLinks: AppLinkItem[] = [
     // checkPolicy: (permissions) => permissions?.agent?.view_agent_list?.read, // this need to be adjusted
   },
   {
-    name: 'Plan i izvrsenje',
+    name: 'Izvrsenje budzeta',
     icon: Sheet,
-    path: '/plan-i-izvrsenje',
+    path: '/izvrsenje-budzeta',
     group: 'Overview',
     // checkPolicy: (permissions) => permissions?.users?.all_users?.read,
   },

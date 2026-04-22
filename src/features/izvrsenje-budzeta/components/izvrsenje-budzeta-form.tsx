@@ -5,19 +5,19 @@ import { UploadInput } from "@/components/ui/form/upload-input";
 import { useState } from "react";
 import { Button } from "@/components/ui/button";
 import { excelFileFileSchema, ExceFileFormSchema } from "@/utils/manage-file/excel-file-schema";
-import { PlanIIzvrsenjeInputExcelFormSchema, planIIzvrsenjeInputExcelSchema } from "@/features/plan-i-izvrsenje/schemas";
+import { FormIzvrsenjeBudzetaExcelSchema, izvrsenjeBudzetaExcelSchema } from "@/features/izvrsenje-budzeta/schemas";
 import { readSchemaParsedExcelFile, readMultipleExcelSheets } from "@/utils/manage-file/read-schema-parsed-excel-file";
-import { planSchema, planItem, izvrsenjeSchema, izvrsenjeHeaderMap, izvrsenjeItem, ibkItem, IbkSchema, izvorItem, IzvoriSchema } from "@/features/plan-i-izvrsenje/schemas";
-import { createPlanIIzvrsenje } from "@/features/plan-i-izvrsenje/actions";
+import { planSchema, planItem, izvrsenjeSchema, izvrsenjeHeaderMap, izvrsenjeItem, ibkItem, IbkSchema, izvorItem, IzvoriSchema } from "@/features/izvrsenje-budzeta/schemas";
+import { createIzvrsenjeBudzeta } from "@/features/izvrsenje-budzeta/actions";
 import { SKIP_ROWS_SPIRI } from '@/shared/constants';
 import { Controller, useForm } from 'react-hook-form';
 import { Input, Label } from '@/components/ui/form';
 import { Switch } from '@/components/ui/switch/switch';
 import { useEffect } from 'react';
 
-import type { GroupAndMergeResult } from "@/features/plan-i-izvrsenje/dto";
+import type { GroupAndMergeResult } from "@/features/izvrsenje-budzeta/dto";
 
-export function UploadPlanIIzvrsenjeDataForm({ 
+export function IzvrsenjeBudzetaForm({ 
     closeCreteTable, 
     onDataProcessed 
 }: { 
@@ -37,13 +37,13 @@ export function UploadPlanIIzvrsenjeDataForm({
         getValues,
         clearErrors,
         watch
-    } = useForm<PlanIIzvrsenjeInputExcelFormSchema>({
+    } = useForm<FormIzvrsenjeBudzetaExcelSchema>({
         defaultValues: {
             file: undefined,
             IspfiFileName: '',
             ispfi_izvestaj: false,
         },
-        resolver: zodResolver(planIIzvrsenjeInputExcelSchema),
+        resolver: zodResolver(izvrsenjeBudzetaExcelSchema),
     });
 
     const ispfiIzvestajValue = watch('ispfi_izvestaj');
@@ -134,7 +134,7 @@ export function UploadPlanIIzvrsenjeDataForm({
             const {
                 planIIzvrsenje,
                 header
-            } = await createPlanIIzvrsenje(izvrsenjeData, planData, ibkArray, IzvoriItems)
+            } = await createIzvrsenjeBudzeta(izvrsenjeData, planData, ibkArray, IzvoriItems)
 
             // Call the callback to pass data to parent component
             if (onDataProcessed) {

@@ -5,23 +5,23 @@ import { Button } from "@/components/ui/button"
 import Link from "next/link"
 import { ContentLayout } from "@/components/layouts/content-layout"
 import { FileSpreadsheet } from 'lucide-react';
-import { UploadDialogForPlanIIzvrsenje } from "@/features/plan-i-izvrsenje/components";
+import { DialogUploadIzvrsenjeBuzeta } from "@/features/izvrsenje-budzeta/components";
 import { ExportExcel } from "@/shared/components/export-excel";
 import { useState } from "react";
-import type { GroupAndMergeResult } from "@/features/plan-i-izvrsenje/dto";
+import type { GroupAndMergeResult } from "@/features/izvrsenje-budzeta/dto";
 
-export default function PlanIIzvrsenjePage() {
-    const [planIIzvrsenje, setPlanIIzvrsenje] = useState<GroupAndMergeResult | null>(null);
+export default function IzvrsenjeBudzetaPage() {
+    const [izvrsenjeBudzeta, setIzvrsenjeBudzeta] = useState<GroupAndMergeResult | null>(null);
 
     const handleDataProcessed = (data:GroupAndMergeResult) => {
-        setPlanIIzvrsenje(data);
+        setIzvrsenjeBudzeta(data);
       
     }
     return (
         <ContentLayout routeTitle="Plan i izvrsenje">
             <div className="flex flex-row justify-around ju gap-4">
                 <div className="flex flex-rpw gap-x-3">
-                    <UploadDialogForPlanIIzvrsenje
+                    <DialogUploadIzvrsenjeBuzeta
                         triggerButton={
                             <Button variant="outline" className="p-1 bg-transparent">
                                 Insert excel document
@@ -29,10 +29,10 @@ export default function PlanIIzvrsenjePage() {
                         }
                         onDataProcessed={handleDataProcessed}
                     />
-                    {planIIzvrsenje && planIIzvrsenje.planIIzvrsenje.length > 0 && (
+                    {izvrsenjeBudzeta && izvrsenjeBudzeta.planIIzvrsenje.length > 0 && (
                         <ExportExcel 
-                            data={planIIzvrsenje.planIIzvrsenje} 
-                            header={planIIzvrsenje.header} 
+                            data={izvrsenjeBudzeta.planIIzvrsenje} 
+                            header={izvrsenjeBudzeta.header} 
                             fileName={'Plan i Izvrsenje izvestaj.xlsx'} 
                         />
                     )}

@@ -2,14 +2,14 @@
 
 import { getCurrentUser } from "@/auth/nextjs/currentUser"
 
-import { canInsertPlanIIzvrsenje } from "@/features/plan-i-izvrsenje/permissions";
-import { planItem, izvrsenjeItem, izvorItem } from "@/features/plan-i-izvrsenje/schemas";
-import { AOP_ARRAY } from "@/features/plan-i-izvrsenje/constants";
+import { canInsertPlanIIzvrsenje } from "@/features/izvrsenje-budzeta/permissions";
+import { planItem, izvrsenjeItem, izvorItem } from "@/features/izvrsenje-budzeta/schemas";
+import { AOP_ARRAY } from "@/features/izvrsenje-budzeta/constants";
 
 
-import type { IzvrsenjeGrouped, PlanGrouped, GroupAndMergeResult, MergedRow } from "@/features/plan-i-izvrsenje/dto";
+import type { IzvrsenjeGrouped, PlanGrouped, GroupAndMergeResult, MergedRow } from "@/features/izvrsenje-budzeta/dto";
 
-export async function createPlanIIzvrsenje(izvrsenjeData: izvrsenjeItem[], planData: planItem[], ibkSet: Set<string>, izvoriData: izvorItem[]) {
+export async function createIzvrsenjeBudzeta(izvrsenjeData: izvrsenjeItem[], planData: planItem[], ibkSet: Set<string>, izvoriData: izvorItem[]) {
 
     const izvrsenjeBuzeta: any[] = []
 
