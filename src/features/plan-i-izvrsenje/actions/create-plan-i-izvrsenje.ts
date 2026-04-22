@@ -127,6 +127,33 @@ export async function createPlanIIzvrsenje(izvrsenjeData: izvrsenjeItem[], planD
                 ])
             );
 
+        ////////////////////////////////////
+
+        const aopColumns = Object.fromEntries(
+            izvoriData.map(aop => [
+                aop.ispfi_kolona,
+                izvrsenjeRow ? Number(izvrsenjeRow[aop.izvor] ?? 0) : 0
+            ])
+        )
+
+        const izvrsenjeBudzeta =   {
+                        konto: key,
+                        plan: planRow?.plan ?? 0,
+                        ...aopColumns,
+                        ukupno: izvrsenjeRow?.ukupno ?? 0,
+                    } 
+                
+
+
+        ////////////////////////////////////
+
+
+
+
+
+
+
+
             return {
                 konto: key,
                 plan: planRow?.plan ?? 0,
