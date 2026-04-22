@@ -125,7 +125,6 @@ export async function createIzvrsenjeBudzeta(izvrsenjeData: izvrsenjeItem[], pla
             const aopColumns = getAopColumns(izvrsenjeRow, izvoriData);
 
             const izvrsenjeBudzeta = {
-                konto: key,
                 plan: planRow?.plan ?? 0,
                 ...aopColumns,
                 ukupno: izvrsenjeRow?.ukupno ?? 0,
@@ -134,8 +133,8 @@ export async function createIzvrsenjeBudzeta(izvrsenjeData: izvrsenjeItem[], pla
 
 
 
-            const {plan, konto, ukupno, ...rest} = izvrsenjeBudzeta
-            const aopValue = AOP_ARRAY.find(item => item.konto === +izvrsenjeBudzeta.konto)?.aop;
+            const {plan, ukupno, ...rest} = izvrsenjeBudzeta
+            const aopValue = AOP_ARRAY.find(item => item.konto === +key)?.aop;
             if (aopValue) {
                 // Create array with fixed structure: [plan, 0, 0, 0, 0, 0, ukupno]
                 const aopItemforJSON = [plan, 0, 0, 0, 0, 0, ukupno];
