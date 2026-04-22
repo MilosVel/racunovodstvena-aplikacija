@@ -40,3 +40,11 @@
         excelHeader: string[];
         izvrsenjeBudzetaZaISPFI: izvrsenjeBudzetaZaISPFIType;
     };
+
+
+
+    export interface IspfiIzvestajData {
+        createizvrsenjeBudzetaZaISPFI:boolean;
+        name: string;
+        reportTypePeriodId: string;
+    }

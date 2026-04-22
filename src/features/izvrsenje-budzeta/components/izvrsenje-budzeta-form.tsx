@@ -16,8 +16,8 @@ import { Switch } from '@/components/ui/switch/switch';
 import { useEffect } from 'react';
 import { Select } from '@/components/ui/form/select';
 
-import type { IzvrsenjeBudzetaResult } from "@/features/izvrsenje-budzeta/dto";
 import type { SelectOption } from '@/types';
+import type { IzvrsenjeBudzetaResult, IspfiIzvestajData } from "@/features/izvrsenje-budzeta/dto";
 
 
 
@@ -50,7 +50,7 @@ export function IzvrsenjeBudzetaForm({
     onDataProcessed 
 }: { 
     closeCreteTable: () => void;
-    onDataProcessed?: (data:IzvrsenjeBudzetaResult) => void;
+    onDataProcessed?: (data:IzvrsenjeBudzetaResult & IspfiIzvestajData) => void;
 }) {
     const [percentageUploaded, setPercentageUploaded] = useState(0);
     const [isProcessing, setIsProcessing] = useState(false);
@@ -70,7 +70,7 @@ export function IzvrsenjeBudzetaForm({
             file: undefined,
             IspfiFileName: '',
             ispfi_izvestaj: false,
-            ReportTypePeriodId: undefined
+            reportTypePeriodId: undefined
         },
         resolver: zodResolver(izvrsenjeBudzetaSumbitSchema),
     });
@@ -168,10 +168,16 @@ export function IzvrsenjeBudzetaForm({
 
             // Call the callback to pass data to parent component
             if (onDataProcessed) {
-                onDataProcessed({izvrsenjeBuzetaPoKontima, excelHeader, izvrsenjeBudzetaZaISPFI});
+                onDataProcessed({
+                    izvrsenjeBuzetaPoKontima, 
+                    excelHeader, 
+                    izvrsenjeBudzetaZaISPFI, 
+                    createizvrsenjeBudzetaZaISPFI: formValues.ispfi_izvestaj || false,
+                    name: formValues.IspfiFileName || '', 
+                    reportTypePeriodId: formValues.reportTypePeriodId || '',
+                });
             }
 
-    
 
             setPercentageUploaded(100);
             toast.success('Podaci su uspešno obrađeni', {
@@ -236,12 +242,12 @@ export function IzvrsenjeBudzetaForm({
             // onBlur={handleInputFocus}
             />
         <Select
-        name="ReportTypePeriodId"
+        name="reportTypePeriodId"
         control={control}
         placeholder="ReportTypePeriodId "
         options={REPORT_PERIOD_TYPE_OPTIONS}
         label="Period"
-        error={errors.ReportTypePeriodId}
+        error={errors.reportTypePeriodId}
         className="py-[11px]"
         // formatOptionLabel={formatOptionLabel}
         // onChange={(shiftType) => chargesUpdate(shiftType as string)}
