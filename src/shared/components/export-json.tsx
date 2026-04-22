@@ -4,14 +4,14 @@ import { Button } from '@/components/ui/button'
 
 interface ExportJsonProps {
     data: Record<string, number[]>
-    fileName?: string
     reportName?: string
+    period:string
 }
 
 export function ExportJson({
     data,
-    fileName = 'report.json',
-    reportName = 'PFI1-2026-60990-2'
+    reportName = 'Report se mora izeti iz ISPFIa',
+period
 }: ExportJsonProps) {
     const exportToJson = () => {
         if (!data || Object.keys(data).length === 0) {
@@ -38,7 +38,7 @@ export function ExportJson({
                 OrganizationStatus: "None",
                 OrganizationStatusChangedDate: null,
                 Description: "",
-                ReportTypePeriodId: 1
+                ReportTypePeriodId: period
             },
             Forms: [formObject]
         }
@@ -49,7 +49,7 @@ export function ExportJson({
         
         const link = document.createElement('a')
         link.href = url
-        link.download = fileName
+        link.download = reportName
         document.body.appendChild(link)
         link.click()
         document.body.removeChild(link)
@@ -58,7 +58,7 @@ export function ExportJson({
 
     return (
         <Button variant="outline" className="p-1 bg-transparent" onClick={exportToJson}>
-            Export to JSON - {fileName}
+            Export to JSON - {reportName}
         </Button>
     )
 }

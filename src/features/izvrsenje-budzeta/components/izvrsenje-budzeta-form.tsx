@@ -5,7 +5,7 @@ import { UploadInput } from "@/components/ui/form/upload-input";
 import { useState } from "react";
 import { Button } from "@/components/ui/button";
 import { excelFileFileSchema, ExceFileFormSchema } from "@/utils/manage-file/excel-file-schema";
-import { FormIzvrsenjeBudzetaSubmitSchema, izvrsenjeBudzetaSumbitSchema} from "@/features/izvrsenje-budzeta/schemas";
+import { FormIzvrsenjeBudzetaSubmitSchema, izvrsenjeBudzetaSumbitSchema } from "@/features/izvrsenje-budzeta/schemas";
 import { readSchemaParsedExcelFile, readMultipleExcelSheets } from "@/utils/manage-file/read-schema-parsed-excel-file";
 import { planSchema, planItem, izvrsenjeSchema, izvrsenjeHeaderMap, izvrsenjeItem, ibkItem, IbkSchema, izvorItem, IzvoriSchema } from "@/features/izvrsenje-budzeta/schemas";
 import { createIzvrsenjeBudzeta } from "@/features/izvrsenje-budzeta/actions";
@@ -23,34 +23,34 @@ import type { IzvrsenjeBudzetaResult, IspfiIzvestajData } from "@/features/izvrs
 
 
 export const REPORT_PERIOD_TYPE_OPTIONS: SelectOption[] = [
-  {
-    value: '1',
-    label: '1',
-   
-  },
-  {
-    value: '2',
-    label: '2',
- 
-  },
-  {
-    value: '3',
-    label: '3',
- 
-  },
-  {
-    value: '4',
-    label: '4',
-  },
+    {
+        value: '1',
+        label: '1',
+
+    },
+    {
+        value: '2',
+        label: '2',
+
+    },
+    {
+        value: '3',
+        label: '3',
+
+    },
+    {
+        value: '4',
+        label: '4',
+    },
 ];
 
 
-export function IzvrsenjeBudzetaForm({ 
-    closeCreteTable, 
-    onDataProcessed 
-}: { 
+export function IzvrsenjeBudzetaForm({
+    closeCreteTable,
+    onDataProcessed
+}: {
     closeCreteTable: () => void;
-    onDataProcessed?: (data:IzvrsenjeBudzetaResult & IspfiIzvestajData) => void;
+    onDataProcessed?: (data: IzvrsenjeBudzetaResult & IspfiIzvestajData) => void;
 }) {
     const [percentageUploaded, setPercentageUploaded] = useState(0);
     const [isProcessing, setIsProcessing] = useState(false);
@@ -76,7 +76,7 @@ export function IzvrsenjeBudzetaForm({
     });
 
     const ispfiIzvestajValue = watch('ispfi_izvestaj');
-    
+
     useEffect(() => {
         if (!ispfiIzvestajValue) {
             clearErrors('IspfiFileName');
@@ -88,77 +88,95 @@ export function IzvrsenjeBudzetaForm({
             setIsProcessing(true);
 
 
-            // const [izvrsenjeData, planData] = await readMultipleExcelSheets<[izvrsenjeItem, planItem]>(
-            //     formValues.file,
-            //     [
-            //         {
-            //             schema: izvrsenjeSchema,
-            //             headerMap: izvrsenjeHeaderMap,
-            //             sheetIndex: 0,
-            //             skipRows: SKIP_ROWS_SPIRI,   // skip logo/title/totals block so row 8 becomes the header
-            //             lenient: true,
-            //             onProgress: (processed, total) => {
-            //                 setPercentageUploaded(Math.round((processed / total) * 50));
-            //             }
-            //         },
-            //         {
-            //             schema: planSchema,
-            //             sheetIndex: 1,
-            //             lenient: true,
-            //             onProgress: (processed, total) => {
-            //                 setPercentageUploaded(50 + Math.round((processed / total) * 50));
-            //             }
-            //         },
-            //     ]
-            // );
+            const [izvrsenjeData, planData, IbkItems, IzvoriItems] = await readMultipleExcelSheets<[izvrsenjeItem, planItem, ibkItem, izvorItem]>(
+                formValues.file,
+                [
+                    {
+                        schema: izvrsenjeSchema,
+                        headerMap: izvrsenjeHeaderMap,
+                        sheetIndex: 0,
+                        skipRows: SKIP_ROWS_SPIRI,   // skip logo/title/totals block so row 8 becomes the header
+                        lenient: true,
+                        onProgress: (processed, total) => {
+                            setPercentageUploaded(Math.round((processed / total) * 50));
+                        }
+                    },
+                    {
+                        schema: planSchema,
+                        sheetIndex: 1,
+                        lenient: true,
+                        onProgress: (processed, total) => {
+                            setPercentageUploaded(50 + Math.round((processed / total) * 50));
+                        }
+                    },
+                    {
+                        schema: IbkSchema,
+                        sheetIndex: 2,
+                        lenient: true,
+                        onProgress: (processed, total) => {
+                            setPercentageUploaded(50 + Math.round((processed / total) * 50));
+                        }
+                    },
+                    {
+                        schema: IzvoriSchema,
+                        sheetIndex: 3,
+                        lenient: true,
+                        onProgress: (processed, total) => {
+                            setPercentageUploaded(50 + Math.round((processed / total) * 50));
+                        }
+                    }
+                ]
+            );
 
 
 
 
-            const izvrsenjeData = await readSchemaParsedExcelFile<izvrsenjeItem>({
-                file: formValues.file,
-                schema: izvrsenjeSchema,
-                headerMap: izvrsenjeHeaderMap,
-                sheetIndex: 0,
-                skipRows: SKIP_ROWS_SPIRI,   // skip logo/title/totals block so row 8 becomes the header
-                lenient: true,
-                onProgress: (processed, total) => {
-                    setPercentageUploaded(Math.round((processed / total) * 50));
-                }
-            });
+            // const izvrsenjeData = await readSchemaParsedExcelFile<izvrsenjeItem>({
+            //     file: formValues.file,
+            //     schema: izvrsenjeSchema,
+            //     headerMap: izvrsenjeHeaderMap,
+            //     sheetIndex: 0,
+            //     skipRows: SKIP_ROWS_SPIRI,   // skip logo/title/totals block so row 8 becomes the header
+            //     lenient: true,
+            //     onProgress: (processed, total) => {
+            //         setPercentageUploaded(Math.round((processed / total) * 50));
+            //     }
+            // });
 
-            const planData = await readSchemaParsedExcelFile<planItem>({
-                file: formValues.file,
-                schema: planSchema,
-                sheetIndex: 1,
-                lenient: true,
-                onProgress: (processed, total) => {
-                    setPercentageUploaded(50 + Math.round((processed / total) * 50));
-                }
-            });
-            const IbkItems = await readSchemaParsedExcelFile<ibkItem>({
-                file: formValues.file,
-                schema: IbkSchema,
-                sheetIndex: 2,
-                lenient: true,
-                onProgress: (processed, total) => {
-                    setPercentageUploaded(50 + Math.round((processed / total) * 50));
-                }
-            });
+            // const planData = await readSchemaParsedExcelFile<planItem>({
+            //     file: formValues.file,
+            //     schema: planSchema,
+            //     sheetIndex: 1,
+            //     lenient: true,
+            //     onProgress: (processed, total) => {
+            //         setPercentageUploaded(50 + Math.round((processed / total) * 50));
+            //     }
+            // });
+
+
+            // const IbkItems = await readSchemaParsedExcelFile<ibkItem>({
+            //     file: formValues.file,
+            //     schema: IbkSchema,
+            //     sheetIndex: 2,
+            //     lenient: true,
+            //     onProgress: (processed, total) => {
+            //         setPercentageUploaded(50 + Math.round((processed / total) * 50));
+            //     }
+            // });
+
+
+
+            // const IzvoriItems = await readSchemaParsedExcelFile<izvorItem>({
+            //     file: formValues.file,
+            //     schema: IzvoriSchema,
+            //     sheetIndex: 3,
+            //     lenient: true,
+            //     onProgress: (processed, total) => {
+            //         setPercentageUploaded(50 + Math.round((processed / total) * 50));
+            //     }
+            // });
 
             const ibkArray = new Set(IbkItems.map((item) => item.ibk))
-
-
-          const IzvoriItems = await readSchemaParsedExcelFile<izvorItem>({
-                file: formValues.file,
-                schema: IzvoriSchema,
-                sheetIndex: 3,
-                lenient: true,
-                onProgress: (processed, total) => {
-                    setPercentageUploaded(50 + Math.round((processed / total) * 50));
-                }
-            });
-
 
             const {
                 izvrsenjeBuzetaPoKontima,
@@ -169,11 +187,11 @@ export function IzvrsenjeBudzetaForm({
             // Call the callback to pass data to parent component
             if (onDataProcessed) {
                 onDataProcessed({
-                    izvrsenjeBuzetaPoKontima, 
-                    excelHeader, 
-                    izvrsenjeBudzetaZaISPFI, 
+                    izvrsenjeBuzetaPoKontima,
+                    excelHeader,
+                    izvrsenjeBudzetaZaISPFI,
                     createizvrsenjeBudzetaZaISPFI: formValues.ispfi_izvestaj || false,
-                    name: formValues.IspfiFileName || '', 
+                    name: formValues.IspfiFileName || '',
                     reportTypePeriodId: formValues.reportTypePeriodId || '',
                 });
             }
@@ -209,56 +227,56 @@ export function IzvrsenjeBudzetaForm({
                 percentageUploaded={percentageUploaded}
             />
 
-       <Controller
-                  control={control}
-                  name="ispfi_izvestaj"
-                  render={({ field }) => (
+            <Controller
+                control={control}
+                name="ispfi_izvestaj"
+                render={({ field }) => (
                     <div className="items-center flex gap-x-2 mt-4 justify-start">
-                      <Label htmlFor="ispfi_izvestaj">ISPFI izveštaj</Label>
-                      <Switch
-                        id="ispfi_izvestaj"
-                        checked={field.value}
-                        onCheckedChange={(checked) => {
-                          field.onChange(checked);
-                        }}
-                      />
+                        <Label htmlFor="ispfi_izvestaj">ISPFI izveštaj</Label>
+                        <Switch
+                            id="ispfi_izvestaj"
+                            checked={field.value}
+                            onCheckedChange={(checked) => {
+                                field.onChange(checked);
+                            }}
+                        />
                     </div>
-                  )}
-                />
-
-
-        { ispfiIzvestajValue && 
-        (
-        <>
-        <Input
-            type="text"
-            placeholder={'PI-123456-89'}
-            label="Naziv ISPFI izvestaja"
-            registration={register('IspfiFileName')}
-            error={errors?.IspfiFileName}
-            // onChange={(e) => console.log(e.target.value)}
-            // registration={registration}
-            // onFocus={handleInputFocus}
-            // onBlur={handleInputFocus}
+                )}
             />
-        <Select
-        name="reportTypePeriodId"
-        control={control}
-        placeholder="ReportTypePeriodId "
-        options={REPORT_PERIOD_TYPE_OPTIONS}
-        label="Period"
-        error={errors.reportTypePeriodId}
-        className="py-[11px]"
-        // formatOptionLabel={formatOptionLabel}
-        // onChange={(shiftType) => chargesUpdate(shiftType as string)}
-        // isDisabled={isLoadingCharges}
-      />
-        </>
-        )  }
+
+
+            {ispfiIzvestajValue &&
+                (
+                    <>
+                        <Input
+                            type="text"
+                            placeholder={'PI-123456-89'}
+                            label="Naziv ISPFI izvestaja"
+                            registration={register('IspfiFileName')}
+                            error={errors?.IspfiFileName}
+                        // onChange={(e) => console.log(e.target.value)}
+                        // registration={registration}
+                        // onFocus={handleInputFocus}
+                        // onBlur={handleInputFocus}
+                        />
+                        <Select
+                            name="reportTypePeriodId"
+                            control={control}
+                            placeholder="ReportTypePeriodId "
+                            options={REPORT_PERIOD_TYPE_OPTIONS}
+                            label="Period"
+                            error={errors.reportTypePeriodId}
+                            className="py-[11px]"
+                        // formatOptionLabel={formatOptionLabel}
+                        // onChange={(shiftType) => chargesUpdate(shiftType as string)}
+                        // isDisabled={isLoadingCharges}
+                        />
+                    </>
+                )}
 
 
 
-            
+
             <div className="flex gap-x-4 justify-end">
                 <Button variant="outline" onClick={closeCreteTable}>Close</Button>
                 <Button type="submit" disabled={!isDirty || isProcessing}>

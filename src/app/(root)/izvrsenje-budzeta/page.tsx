@@ -48,8 +48,8 @@ export default function IzvrsenjeBudzetaPage() {
                 {izvrsenjeBuzetaResult.createizvrsenjeBudzetaZaISPFI && (
                   <ExportJson
                     data={izvrsenjeBuzetaResult.izvrsenjeBudzetaZaISPFI}
-                    fileName={"ISPFI-izvestaj.json"}
-                    reportName="PFI1-2026-60990-2"
+                    reportName={izvrsenjeBuzetaResult.name}
+                    period={izvrsenjeBuzetaResult.reportTypePeriodId}
                   />
                 )}
               </>

@@ -6,6 +6,8 @@ import { canInsertPlanIIzvrsenje } from "@/features/izvrsenje-budzeta/permission
 import { planItem, izvrsenjeItem, izvorItem,  } from "@/features/izvrsenje-budzeta/schemas";
 import { AOP_ARRAY } from "@/features/izvrsenje-budzeta/constants";
 
+const DIVIDER = 1000
+
 
 import type { IzvrsenjeItem, PlanGrouped, IzvrsenjeBudzetaResult, IzvrsenjeBuzetaPoKontimaItem, izvrsenjeBudzetaZaISPFIType } from "@/features/izvrsenje-budzeta/dto";
 
@@ -166,8 +168,11 @@ export async function createIzvrsenjeBudzeta(izvrsenjeData: izvrsenjeItem[], pla
 
                 });
                 
+
+                const aopItemForISPFIIzvrsenjeBudzetaUHiljadama = aopItemForISPFIIzvrsenjeBudzeta.map(value => Math.round(value / 1000));
+
                 // Add to the result object with AOP as key
-                izvrsenjeBudzetaZaISPFI[aopKey.toString()] = aopItemForISPFIIzvrsenjeBudzeta;
+                izvrsenjeBudzetaZaISPFI[aopKey.toString()] = aopItemForISPFIIzvrsenjeBudzetaUHiljadama;
             }
 
         });
