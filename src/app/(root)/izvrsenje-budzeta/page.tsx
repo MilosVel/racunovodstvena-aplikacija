@@ -32,7 +32,7 @@ export default function IzvrsenjeBudzetaPage() {
                     {izvrsenjeBuzetaResult && izvrsenjeBuzetaResult.izvrsenjeBuzetaPoKontima.length > 0 && (
                         <ExportExcel 
                             data={izvrsenjeBuzetaResult.izvrsenjeBuzetaPoKontima} 
-                            header={izvrsenjeBuzetaResult.header} 
+                            header={izvrsenjeBuzetaResult.excelHeader} 
                             fileName={'Plan i Izvrsenje izvestaj.xlsx'} 
                         />
                     )}

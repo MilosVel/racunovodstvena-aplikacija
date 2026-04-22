@@ -11,7 +11,6 @@ import type { IzvrsenjeItem, PlanGrouped, IzvrsenjeBudzetaResult, IzvrsenjeBuzet
 
 export async function createIzvrsenjeBudzeta(izvrsenjeData: izvrsenjeItem[], planData: planItem[], ibkSet: Set<string>, izvoriData: izvorItem[]) {
 
-    const izvrsenjeBuzeta: any[] = []
 
     const jsonIzvrsenjeBuzetaArray: Record<string, number[]> = {}
 
@@ -23,7 +22,7 @@ export async function createIzvrsenjeBudzeta(izvrsenjeData: izvrsenjeItem[], pla
     }
 
 
-    function groupAndMerge(
+    function groupAndMergePlanIIzvrsenje(
         izvrsenjeData: izvrsenjeItem[],
         planData: planItem[],
     ): IzvrsenjeBudzetaResult {
@@ -133,7 +132,7 @@ export async function createIzvrsenjeBudzeta(izvrsenjeData: izvrsenjeItem[], pla
             }
 
 
-            izvrsenjeBuzeta.push(izvrsenjeBudzeta)
+
 
             const {plan, konto, ukupno, ...rest} = izvrsenjeBudzeta
             const aopValue = AOP_ARRAY.find(item => item.konto === +izvrsenjeBudzeta.konto)?.aop;
@@ -162,19 +161,19 @@ export async function createIzvrsenjeBudzeta(izvrsenjeData: izvrsenjeItem[], pla
             } as IzvrsenjeBuzetaPoKontimaItem;
         }).sort((a, b) => a.konto.localeCompare(b.konto));
 
-        const header = ['konto', 'plan', ...allIzvori, 'ukupno'];
+        const excelHeader = ['konto', 'plan', ...allIzvori, 'ukupno'];
 
-        return { izvrsenjeBuzetaPoKontima, header };
+        return { izvrsenjeBuzetaPoKontima, excelHeader };
     }
 
-    const { izvrsenjeBuzetaPoKontima, header } = groupAndMerge(izvrsenjeData, planData);
+    const { izvrsenjeBuzetaPoKontima, excelHeader } = groupAndMergePlanIIzvrsenje(izvrsenjeData, planData);
 
     console.log('izvrsenjeBuzeta', jsonIzvrsenjeBuzetaArray);
 
 
     return {
         izvrsenjeBuzetaPoKontima,
-        header
+        excelHeader
     }
 
 }

@@ -35,5 +35,5 @@
 
     export interface IzvrsenjeBudzetaResult {
         izvrsenjeBuzetaPoKontima: IzvrsenjeBuzetaPoKontimaItem[];
-        header: string[];
+        excelHeader: string[];
     };
