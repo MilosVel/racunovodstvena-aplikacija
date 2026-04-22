@@ -18,7 +18,6 @@ export default function IzvrsenjeBudzetaPage() {
     (IzvrsenjeBudzetaResult & IspfiIzvestajData) | null
   >(null);
 
-  // const [ispfiIzvestajData, setIspfiIzvestajData] = useState<IspfiIzvestajData | null>(null);
 
   const handleDataProcessed = (
     data: IzvrsenjeBudzetaResult & IspfiIzvestajData,
