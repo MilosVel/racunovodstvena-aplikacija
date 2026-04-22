@@ -9,8 +9,9 @@ import { AOP_ARRAY } from "@/features/plan-i-izvrsenje/constants";
 
 import type { IzvrsenjeGrouped, PlanGrouped, GroupAndMergeResult, MergedRow } from "@/features/plan-i-izvrsenje/dto";
 
-
 export async function createPlanIIzvrsenje(izvrsenjeData: izvrsenjeItem[], planData: planItem[], ibkSet: Set<string>, izvoriData: izvorItem[]) {
+
+    const izvrsenjeBuzeta: any[] = []
 
     const user = await getCurrentUser({ redirectIfNotFound: true })  // nece da radi bez ->   { redirectIfNotFound: true }   Proveriti zasto !!!!
 
@@ -33,15 +34,15 @@ export async function createPlanIIzvrsenje(izvrsenjeData: izvrsenjeItem[], planD
         // Helper function to merge aop columns, summing values for duplicate keys
         const mergeAopColumns = (izvrsenjeRow: IzvrsenjeGrouped | undefined, izvoriData: izvorItem[]): Record<string, number> => {
             const result: Record<string, number> = {};
-            
+
             izvoriData.forEach(aop => {
                 const value = getIzvrsenjeValue(izvrsenjeRow, aop.izvor);
                 const column = aop.ispfi_kolona;
-                
+
                 // Sum values for duplicate columns
                 result[column] = (result[column] || 0) + value;
             });
-            
+
             return result;
         };
 
@@ -91,29 +92,28 @@ export async function createPlanIIzvrsenje(izvrsenjeData: izvrsenjeItem[], planD
         });
 
         // 0
-// This is example of izvoriData
-// const izvoriData = [{izvor: '01', ispfi_kolona: '8'},
-// {izvor: '07', ispfi_kolona: '6'},
-// {izvor: '17', ispfi_kolona: '06'}];
+        // This is example of izvoriData
+        // const izvoriData = [{izvor: '01', ispfi_kolona: '8'},
+        // {izvor: '07', ispfi_kolona: '6'},
+        // {izvor: '17', ispfi_kolona: '06'}];
 
         // ── collect all unique izvor values sorted ──
         const allIzvori = izvoriData.map(item => item.izvor).sort();
-        const IspfiColumns= izvoriData.map(item => item.ispfi_kolona).sort();
+        const IspfiColumns = izvoriData.map(item => item.ispfi_kolona).sort();
 
         // ── Full outer join ──
         const allKonta = new Set([...izvrsenjeMap.keys(), ...planMap.keys()]);
 
 
-// const izvrsenjeBuzeta = 
-// Can you help me to create izvrsenjeBuzeta. Every konto ojb  in allKonta array has its aop in AOP_ARRAY. And I want to have this kind of structure
-// {IzvrsenjeBuzdetaExcel: [{konto: some valeue, plan: some value, ....allIzvori and valies for respective izvor, ukupno:somevalue that reresetns summ of allIzvori values}]
-// ispfiIzvrsenjeBuzeta: {
-//     aop1: [plan: some value for this aop, ....IspfiColumns and valies for respective column, ukupno:somevalue that reresetns summ of all IspfiColumns values fro this aop],
-//     ...
-// }
-// }
-// and to cosnole.log(izvrsenjeBuzeta)
-
+        // const izvrsenjeBuzeta = 
+        // Can you help me to create izvrsenjeBuzeta. Every konto ojb  in allKonta array has its aop in AOP_ARRAY. And I want to have this kind of structure
+        // {IzvrsenjeBuzdetaExcel: [{konto: some valeue, plan: some value, ....allIzvori and valies for respective izvor, ukupno:somevalue that reresetns summ of allIzvori values}]
+        // ispfiIzvrsenjeBuzeta: {
+        //     aop1: [plan: some value for this aop, ....IspfiColumns and valies for respective column, ukupno:somevalue that reresetns summ of all IspfiColumns values fro this aop],
+        //     ...
+        // }
+        // }
+        // and to cosnole.log(izvrsenjeBuzeta)
 
 
 
@@ -131,9 +131,9 @@ export async function createPlanIIzvrsenje(izvrsenjeData: izvrsenjeItem[], planD
 
             const aop = filteredAops.find(item => {
                 return item.konto === +key
-            })    
-                
-    //   console.log(key,'konot',aop)
+            })
+
+            //   console.log(key,'konot',aop)
 
 
 
@@ -147,24 +147,24 @@ export async function createPlanIIzvrsenje(izvrsenjeData: izvrsenjeItem[], planD
                 ])
             );
 
-        ////////////////////////////////////
+            ////////////////////////////////////
 
-        const aopColumns = mergeAopColumns(izvrsenjeRow, izvoriData);
+            const aopColumns = mergeAopColumns(izvrsenjeRow, izvoriData);
 
-        // This is relatively good but nwo we can have case:
-        // aopColumns= onst aopColumns = Object.fromEntries([['aop1', 100], ['aop2', 200], ['aop1', 300]])
-        // And I want to merge them so that aop1 has value 400
+            // This is relatively good but nwo we can have case:
+            // aopColumns= onst aopColumns = Object.fromEntries([['aop1', 100], ['aop2', 200], ['aop1', 300]])
+            // And I want to merge them so that aop1 has value 400
 
-        const izvrsenjeBudzeta =   {
-                        konto: key,
-                        plan: planRow?.plan ?? 0,
-                        ...aopColumns,
-                        ukupno: izvrsenjeRow?.ukupno ?? 0,
-                    } 
-                
+            const izvrsenjeBudzeta = {
+                konto: key,
+                plan: planRow?.plan ?? 0,
+                ...aopColumns,
+                ukupno: izvrsenjeRow?.ukupno ?? 0,
+            }
 
-        console.log('izvrsenjeBudzeta', izvrsenjeBudzeta)
-        ////////////////////////////////////
+
+            izvrsenjeBuzeta.push(izvrsenjeBudzeta)
+            ////////////////////////////////////
 
 
 
@@ -178,7 +178,7 @@ export async function createPlanIIzvrsenje(izvrsenjeData: izvrsenjeItem[], planD
                 plan: planRow?.plan ?? 0,
                 ...izvorColumns,
                 ukupno: izvrsenjeRow?.ukupno ?? 0,
-            }  as MergedRow;
+            } as MergedRow;
         }).sort((a, b) => a.konto.localeCompare(b.konto));
 
         const header = ['konto', 'plan', ...allIzvori, 'ukupno'];
@@ -187,6 +187,8 @@ export async function createPlanIIzvrsenje(izvrsenjeData: izvrsenjeItem[], planD
     }
 
     const { planIIzvrsenje, header } = groupAndMerge(izvrsenjeData, planData);
+
+    console.log('izvrsenjeBuzeta', izvrsenjeBuzeta.sort((a, b) => a.konto.localeCompare(b.konto)));
 
 
     return {
