@@ -12,7 +12,7 @@ import type { IzvrsenjeItem, PlanGrouped, IzvrsenjeBudzetaResult, IzvrsenjeBuzet
 export async function createIzvrsenjeBudzeta(izvrsenjeData: izvrsenjeItem[], planData: planItem[], ibkSet: Set<string>, izvoriData: izvorItem[]) {
 
 
-    const jsonIzvrsenjeBuzetaArray: Record<string, number[]> = {}
+    const jsonIzvrsenjeBuzetaForISPFI: Record<string, number[]> = {}
 
     const user = await getCurrentUser({ redirectIfNotFound: true })  // nece da radi bez ->   { redirectIfNotFound: true }   Proveriti zasto !!!!
 
@@ -122,34 +122,35 @@ export async function createIzvrsenjeBudzeta(izvrsenjeData: izvrsenjeItem[], pla
             );
 
 
+    
+
+
+
+
+            const plan =  planRow?.plan ?? 0
+            const ukupno = izvrsenjeRow?.ukupno ?? 0
+
             const aopColumns = getAopColumns(izvrsenjeRow, izvoriData);
 
-            const izvrsenjeBudzeta = {
-                plan: planRow?.plan ?? 0,
-                ...aopColumns,
-                ukupno: izvrsenjeRow?.ukupno ?? 0,
-            }
-
-
-
-
-            const {plan, ukupno, ...rest} = izvrsenjeBudzeta
             const aopValue = AOP_ARRAY.find(item => item.konto === +key)?.aop;
+
             if (aopValue) {
                 // Create array with fixed structure: [plan, 0, 0, 0, 0, 0, ukupno]
-                const aopItemforJSON = [plan, 0, 0, 0, 0, 0, ukupno];
+                const aopItemForISPFIIzvrsenjeBudzeta = [plan, 0, 0, 0, 0, 0, ukupno];
                 
                 // Map rest keys to indices (1-5) and set values
-                Object.entries(rest as Record<string, number>).forEach(([key, value]) => {
-                    const index = parseInt(key);
+                Object.entries(aopColumns).forEach(([key, value]) => {
+                    const index = parseInt(key) - 5;
                     if (index >= 1 && index <= 5) {
-                        aopItemforJSON[index] = value;
+                        aopItemForISPFIIzvrsenjeBudzeta[index] = value;
                     }
                 });
                 
                 // Add to the result object with AOP as key
-                jsonIzvrsenjeBuzetaArray[aopValue.toString()] = aopItemforJSON;
+                jsonIzvrsenjeBuzetaForISPFI[aopValue.toString()] = aopItemForISPFIIzvrsenjeBudzeta;
             }
+            
+
             
 
             return {
@@ -167,7 +168,7 @@ export async function createIzvrsenjeBudzeta(izvrsenjeData: izvrsenjeItem[], pla
 
     const { izvrsenjeBuzetaPoKontima, excelHeader } = groupAndMergePlanIIzvrsenje(izvrsenjeData, planData);
 
-    console.log('izvrsenjeBuzeta', jsonIzvrsenjeBuzetaArray);
+    console.log('izvrsenjeBuzeta', jsonIzvrsenjeBuzetaForISPFI);
 
 
     return {
