@@ -14,8 +14,36 @@ import { Controller, useForm } from 'react-hook-form';
 import { Input, Label } from '@/components/ui/form';
 import { Switch } from '@/components/ui/switch/switch';
 import { useEffect } from 'react';
+import { Select } from '@/components/ui/form/select';
 
 import type { IzvrsenjeBudzetaResult } from "@/features/izvrsenje-budzeta/dto";
+import type { SelectOption } from '@/types';
+
+
+
+
+export const REPORT_PERIOD_TYPE_OPTIONS: SelectOption[] = [
+  {
+    value: '1',
+    label: '1',
+   
+  },
+  {
+    value: '2',
+    label: '2',
+ 
+  },
+  {
+    value: '3',
+    label: '3',
+ 
+  },
+  {
+    value: '4',
+    label: '4',
+  },
+];
+
 
 export function IzvrsenjeBudzetaForm({ 
     closeCreteTable, 
@@ -42,6 +70,7 @@ export function IzvrsenjeBudzetaForm({
             file: undefined,
             IspfiFileName: '',
             ispfi_izvestaj: false,
+            ReportTypePeriodId: undefined
         },
         resolver: zodResolver(izvrsenjeBudzetaSumbitSchema),
     });
@@ -193,7 +222,9 @@ export function IzvrsenjeBudzetaForm({
 
 
         { ispfiIzvestajValue && 
-        (<Input
+        (
+        <>
+        <Input
             type="text"
             placeholder={'PI-123456-89'}
             label="Naziv ISPFI izvestaja"
@@ -204,7 +235,23 @@ export function IzvrsenjeBudzetaForm({
             // onFocus={handleInputFocus}
             // onBlur={handleInputFocus}
             />
-            )}
+        <Select
+        name="ReportTypePeriodId"
+        control={control}
+        placeholder="ReportTypePeriodId "
+        options={REPORT_PERIOD_TYPE_OPTIONS}
+        label="Period"
+        error={errors.ReportTypePeriodId}
+        className="py-[11px]"
+        // formatOptionLabel={formatOptionLabel}
+        // onChange={(shiftType) => chargesUpdate(shiftType as string)}
+        // isDisabled={isLoadingCharges}
+      />
+        </>
+        )  }
+
+
+
             
             <div className="flex gap-x-4 justify-end">
                 <Button variant="outline" onClick={closeCreteTable}>Close</Button>

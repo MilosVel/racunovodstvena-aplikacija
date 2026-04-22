@@ -9,6 +9,7 @@ export const izvrsenjeBudzetaSumbitSchema = excelFileFileSchema.safeExtend({
     .string()
     .trim()
     .optional(),
+    ReportTypePeriodId: z.string().optional(),
 }).refine((data) => {
     if (data.ispfi_izvestaj && (!data.IspfiFileName || data.IspfiFileName.trim() === '')) {
         return false;
@@ -17,6 +18,14 @@ export const izvrsenjeBudzetaSumbitSchema = excelFileFileSchema.safeExtend({
 }, {
     message: 'Ime fajla je obavezno kada je ISPFI izveštaj uključen',
     path: ['IspfiFileName'],
+}).refine((data) => {
+    if (data.ispfi_izvestaj && (!data.ReportTypePeriodId || data.ReportTypePeriodId.trim() === '')) {
+        return false;
+    }
+    return true;
+}, {
+    message: 'Period je obavezan',
+    path: ['ReportTypePeriodId'],
 });
 
 export type FormIzvrsenjeBudzetaSubmitSchema = z.infer<typeof izvrsenjeBudzetaSumbitSchema>;
