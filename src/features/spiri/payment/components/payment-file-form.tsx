@@ -17,6 +17,8 @@ import { Select } from '@/components/ui/form/select';
 
 import type { SelectOption } from '@/types';
 import type { IzvrsenjeBudzetaResult, IspfiIzvestajData } from "@/features/izvrsenje-budzeta/dto";
+import { generatePaymentXmlFile } from '@/features/spiri/payment/actions';
+import { downloadFile } from '@/utils/manage-file/download-file';
 
 
 export function PaymentFileForm({
@@ -68,7 +70,9 @@ export function PaymentFileForm({
                 }
             });
 
-            console.log(paymentData);
+
+            const xmlContent = await generatePaymentXmlFile(paymentData);
+            downloadFile(xmlContent, "Placanje.xml", "application/xml");
 
 
             setPercentageUploaded(100);
